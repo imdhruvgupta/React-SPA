@@ -3,8 +3,8 @@ import { useParams} from "react-router";
 import { useHistory } from "react-router-dom";
 
 export default function Edit(props) {
-    let { id } = useParams();
-    let history = useHistory();
+    const { id } = useParams();
+    const history = useHistory();
 
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');

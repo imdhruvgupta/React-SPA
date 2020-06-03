@@ -1,29 +1,17 @@
-import React, { useState, useEffect } from "react";
-import {Link} from "react-router-dom";
+import React, { useEffect } from 'react';
+import {Link} from 'react-router-dom';
+import { connect } from 'react-redux'
+import {fetchSessions} from '../actions/sessionsActions'; 
 
-export default function Home() {
-    
-    const [sessions, setSessions] = useState([]); 
-    
-    const options = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
+const Home = ({dispatch, sessions, loading}) => {
+   
     useEffect(() => {
-        fetch(`http://localhost:3000/sessions`, options)
-        .then(res => res.json())
-        .then(
-          (result) => {
-            setSessions(result);
-        })
-    }, [])
-    
-    return (
-        <section className="section">
-        <h1> Listing Sessions </h1>
-        <Link to="/sessions/new">Add a New Session</Link>
+        dispatch(fetchSessions());
+    }, [dispatch])
+
+    const renderSessions = () => {
+        if (loading) return <p>Loading sessions...</p>
+        return (
         <table className="table">
         <thead>
         <tr>
@@ -48,6 +36,21 @@ export default function Home() {
         ))}
         </tbody>
         </table>
-        </section>
-        );
+        )
     }
+    
+    return (
+        <section className="section">
+        <h1> Listing Sessions </h1>
+        <Link to="/sessions/new">Add a New Session</Link>
+        {renderSessions()}
+        </section>
+    );
+}
+
+const mapStateToProps = state => ({
+    sessions: state.sessions.sessions,
+    loading: state.sessions.loading
+})
+  
+export default connect(mapStateToProps)(Home)

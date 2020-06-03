@@ -1,31 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { connect } from 'react-redux'
+import { fetchUsers } from '../actions/usersActions';
 
-
-export default function New() {
-    let history = useHistory();
+const New = ({dispatch, users}) => {
+    const history = useHistory();
 
     const [start, setStart] = useState();
     const [end, setEnd] = useState();
     const [userId, setUserId] = useState('');
 
-    const [users, setUsers] = useState([]);
-
     useEffect(() => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-
-        fetch(`http://localhost:3000/users/`, options)
-        .then(res => res.json())
-        .then(
-          (result) => {
-            setUsers(result);
-        })
-    }, []);
+        dispatch(fetchUsers());
+    }, [dispatch]);
 
 
     function handleSubmit(e) {
@@ -75,4 +62,10 @@ export default function New() {
       </section>
     );
 }
-  
+
+const mapStateToProps = state => ({
+  users: state.users.users,
+  loading: state.sessions.loading
+})
+
+export default connect(mapStateToProps)(New)
